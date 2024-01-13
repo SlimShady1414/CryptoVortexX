@@ -9,12 +9,14 @@ describe('Token', () => {
   let token
   let accounts
   let deployer
+  let receiver
   beforeEach(async () => {
     const Token = await ethers.getContractFactory('Token')
     token = await Token.deploy('Dapp University', 'DAPP',  '1000000')
 
     accounts = await ethers.getSigners() //returns array of all accounts
     deployer = accounts[0]
+    receiver = accounts[1]
   })
 
   describe('Deployment', () => {
@@ -43,6 +45,24 @@ describe('Token', () => {
       expect(await token.balanceOf(deployer.address)).to.equal(totalSupply)
     })
 
+
+  })
+
+  describe('Sending Token', () => {
+    let amount
+    it('Transfers token balances', async () => {
+
+      console.log("deployer balance before transfer", await token.balanceOf(deployer.address))
+      console.log("receiver balance before transfer", await token.balanceOf(receiver.address))
+      amount=tokens(100)
+
+      let transaction = await token.connect(deployer).transfer(receiver.address, amount)
+      let result = transaction.wait()
+      //ensure that tokens were transfered
+
+      console.log("deployer balance after transfer", await token.balanceOf(deployer.address))
+      console.log("receiver balance after transfer", await token.balanceOf(receiver.address))
+    })
   })
 
 })
