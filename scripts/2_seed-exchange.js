@@ -1,26 +1,29 @@
+// Import the configuration file
 const config = require('../src/config.json')
 
+// Helper function to convert a number to token units
 const tokens = (n) => {
   return ethers.utils.parseUnits(n.toString(), 'ether')
 }
 
+// Helper function to introduce a delay in seconds
 const wait = (seconds) => {
   const milliseconds = seconds * 1000
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
+// Main trading function
 async function main() {
-  // Fetch accounts from wallet - these are unlocked
+  // Fetch Ethereum accounts - these are unlocked
   const accounts = await ethers.getSigners()
 
-  // Fetch network
+  // Fetch the current network chainId
   const { chainId } = await ethers.provider.getNetwork()
   console.log("Using chainId:", chainId)
 
-  // Fetch deployed tokens
+  // Fetch deployed token contracts
   const DApp = await ethers.getContractAt('Token', config[chainId].DApp.address)
   console.log(`SLIM Token fetched: ${DApp.address}\n`)
-
 
   const mETH = await ethers.getContractAt('Token', config[chainId].mETH.address)
   console.log(`mETH Token fetched: ${mETH.address}\n`)
@@ -28,7 +31,7 @@ async function main() {
   const mDAI = await ethers.getContractAt('Token', config[chainId].mDAI.address)
   console.log(`mDAI Token fetched: ${mDAI.address}\n`)
 
-  // Fetch the deployed exchange
+  // Fetch the deployed exchange contract
   const exchange = await ethers.getContractAt('Exchange', config[chainId].exchange.address)
   console.log(`Exchange fetched: ${exchange.address}\n`)
 
@@ -47,7 +50,7 @@ async function main() {
   const user2 = accounts[1]
   amount = tokens(10000)
 
-  // user1 approves 10,000 Dapp...
+  // user1 approves 10,000 DApp...
   transaction = await DApp.connect(user1).approve(exchange.address, amount)
   await transaction.wait()
   console.log(`Approved ${amount} tokens from ${user1.address}`)
