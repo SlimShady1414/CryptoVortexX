@@ -15,6 +15,7 @@ async function main() {
   await dapp.deployed()
   console.log(`SLIM Deployed to: ${dapp.address}`)
 
+
   const mETH = await Token.deploy('mETH', 'mETH', '1000000')
   await mETH.deployed()
   console.log(`mETH Deployed to: ${mETH.address}`)
